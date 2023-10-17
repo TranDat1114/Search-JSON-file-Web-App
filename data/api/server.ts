@@ -1,10 +1,8 @@
 import jsonServer from 'json-server';
-import express from 'express';
-import path from 'path';
 import cors from 'cors';
 
 const server = jsonServer.create();
-const dbRouter = jsonServer.router(path.join(__dirname, 'db.json'));
+const dbRouter = jsonServer.router('db.json');
 const middlewares = jsonServer.defaults();
 
 server.use(cors());
