@@ -11,6 +11,42 @@ Query data from json file users.json; tickets.json; organizations.json
 **Server:** Node
 
 
+## API Reference
+
+#### Get all items
+
+```http
+  GET https://search-json-file-server-db.vercel.app/organizations
+```
+
+return organizations.json
+
+#### Get all items
+
+```http
+  GET https://search-json-file-server-db.vercel.app/users
+```
+
+return users.json
+
+#### Get all items
+
+```http
+  GET https://search-json-file-server-db.vercel.app/tickets
+```
+
+return tickets.json
+## Demo
+
+#### https://vercel.com/trandat1114/search-json-file-web-app
+
+![](https://github.com/TranDat1114/Search-JSON-file-Web-App/demo.gif)
+## Screenshots
+
+![App Screenshot](https://i.ibb.co/bdbtPzx/Screenshot-2023-10-18-044637.png)
+![App Screenshot](https://i.ibb.co/0G191wm/Screenshot-2023-10-18-044405.png)
+
+
 ## Installation
 
 ```bash
@@ -19,13 +55,6 @@ Query data from json file users.json; tickets.json; organizations.json
 ```
 
     
-## Demo
-
-https://vercel.com/trandat1114/search-json-file-web-app
-
-
-
-
 ## Authors
 
 - [@trandat1114](https://www.github.com/trandat1114)
