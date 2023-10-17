@@ -4,17 +4,14 @@ import path from 'path';
 import cors from 'cors';
 
 const server = jsonServer.create();
-const organizationsRouter = jsonServer.router(path.join(__dirname, 'organizations.json'));
-const usersRouter = jsonServer.router(path.join(__dirname, 'users.json'));
-const ticketsRouter = jsonServer.router(path.join(__dirname, 'tickets.json'));
+const dbRouter = jsonServer.router(path.join(__dirname, 'db.json'));
 const middlewares = jsonServer.defaults();
 
 server.use(cors());
 
 server.use(middlewares);
 
-server.use(organizationsRouter);
-// server.use('/users', usersRouter);
+server.use(dbRouter);
 
 const PORT = process.env.PORT || 3000;
 server.listen(PORT, () => {
