@@ -311,7 +311,7 @@ export const columns: ColumnDef<User>[] = [
     }
 ]
 
-const api_Url = "http://localhost:8080/users.json"
+const api_Url = "https://search-json-file-server-db.vercel.app/users"
 type props = {
     organizationInputId: string
 }

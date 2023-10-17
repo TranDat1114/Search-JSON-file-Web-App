@@ -298,7 +298,7 @@ export const columns: ColumnDef<Organization>[] = [
     }
 ]
 
-const api_Url = "http://localhost:8080/organizations.json"
+const api_Url = "https://search-json-file-server-db.vercel.app/organizations"
 export function OrganizationDataTable() {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(

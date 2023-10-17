@@ -272,7 +272,7 @@ export const columns: ColumnDef<Ticket>[] = [
     }
 ]
 
-const api_Url = "http://localhost:8080/tickets.json"
+const api_Url = "https://search-json-file-server-db.vercel.app/tickets"
 type props = {
     organizationInputId: string
 }
