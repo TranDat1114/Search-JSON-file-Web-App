@@ -19,8 +19,8 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 
-import { Button } from "../../components/ui/button"
-import { Checkbox } from "../../components/ui/checkbox"
+import { Button } from "../ui/button"
+import { Checkbox } from "../ui/checkbox"
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -29,8 +29,8 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
-import { Input } from "../../components/ui/input"
+} from "../ui/dropdown-menu"
+import { Input } from "../ui/input"
 import {
     Table,
     TableBody,
@@ -38,13 +38,14 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../../components/ui/table"
+} from "../ui/table"
 import { useToast } from "../ui/use-toast"
 import axios from "axios"
 import { Badge } from "../ui/badge"
 import { CheckCircle2, XCircle } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import { UserProfileDialog } from "../ui/user-profile-dialog"
+import { Link } from "react-router-dom"
 
 export type User = {
     _id: number;
@@ -90,28 +91,6 @@ export const columns: ColumnDef<User>[] = [
         enableHiding: false,
     },
     {
-        accessorKey: "url",
-        header: () => {
-            return (
-                <div className="">
-                    Image
-                </div>
-            )
-        },
-        cell: ({ row }) => <>
-            <TooltipProvider>
-                <Tooltip>
-                    <TooltipTrigger asChild>
-                        <img src={`${row.getValue("url")}`} alt="problem with img" />
-                    </TooltipTrigger>
-                    <TooltipContent>
-                        {row.original.name}
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        </>
-        ,
-    }, {
         accessorKey: "alias",
         header: ({ column }) => {
             return (
@@ -298,9 +277,22 @@ export const columns: ColumnDef<User>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
+                            onClick={() => navigator.clipboard.writeText(row.original._id.toString())}
+                        >
+                            Copy _id
+                        </DropdownMenuItem> <DropdownMenuItem
                             onClick={() => navigator.clipboard.writeText(row.original.external_id)}
                         >
                             Copy external id
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to={`/organization/${row.original.organization_id}`}>View this user's organization</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to={`/ticket-assignee/${row.original._id}`}>View this user's assignee ticket subject</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to={`/ticket-submited/${row.original._id}`}>View this user's submited ticket subject</Link>
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <UserProfileDialog user={row.original} />
@@ -313,10 +305,11 @@ export const columns: ColumnDef<User>[] = [
 
 const api_Url = "https://search-json-file-server-db.vercel.app/users"
 type props = {
-    organizationInputId: string
+    userInputId: string | undefined,
+    organizationInputId: string | undefined
 }
 
-export function OrganizationUserDataTable({ organizationInputId }: props) {
+export function OrganizationUserDataTable({ userInputId, organizationInputId }: props) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -332,7 +325,13 @@ export function OrganizationUserDataTable({ organizationInputId }: props) {
         axios.get(api_Url)
             .then((response) => {
                 const data: User[] = response.data;
-                setUsers(data.filter(f => f.organization_id === Number.parseInt(organizationInputId)));
+                if (userInputId != undefined) {
+                    setUsers(data.filter(f => f._id === Number.parseInt(userInputId)));
+                } else if (organizationInputId != undefined) {
+                    setUsers(data.filter(f => f.organization_id === Number.parseInt(organizationInputId)));
+                } else {
+                    setUsers(data);
+                }
             })
             .catch((error) => {
                 console.error('Lỗi khi gọi API:', error);
@@ -342,7 +341,7 @@ export function OrganizationUserDataTable({ organizationInputId }: props) {
                     description: error?.message ?? "Unknown error",
                 });
             });
-    }, [organizationInputId, toast]);
+    }, [userInputId, toast, organizationInputId]);
 
     const data = users;
 

@@ -286,10 +286,10 @@ export const columns: ColumnDef<Organization>[] = [
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
                         <DropdownMenuItem>
-                            <Link to={`/organization-ticket/${row.original._id}`}>View this organization's ticket</Link>
+                            <Link to={`/ticket-organization/${row.original._id}`}>View this organization's ticket</Link>
                         </DropdownMenuItem>
                         <DropdownMenuItem>
-                            <Link to={`/organization-user/${row.original._id}`}>View this organization's user </Link>
+                            <Link to={`/user-organization/${row.original._id}`}>View this organization's user </Link>
                         </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu >
@@ -299,7 +299,11 @@ export const columns: ColumnDef<Organization>[] = [
 ]
 
 const api_Url = "https://search-json-file-server-db.vercel.app/organizations"
-export function OrganizationDataTable() {
+type props = {
+    organizationInputId: string | undefined
+}
+
+export function OrganizationDataTable({ organizationInputId }: props) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -319,7 +323,12 @@ export function OrganizationDataTable() {
             .then((response) => {
                 const data: Organization[] = response.data;
                 console.log(data);
-                setOrganizations(data);
+
+                if (organizationInputId != undefined) {
+                    setOrganizations(data.filter(f => f._id === Number.parseInt(organizationInputId)));
+                } else {
+                    setOrganizations(data);
+                }
             })
             .catch((error) => {
                 console.error('Lỗi khi gọi API:', error);

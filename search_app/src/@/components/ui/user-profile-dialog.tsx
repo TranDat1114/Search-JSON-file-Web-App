@@ -1,3 +1,5 @@
+import altImg from "../../../assets/altIMG.png"
+import { AspectRatio } from "../ui/aspect-ratio"
 import { Button } from "../../components/ui/button"
 import {
     Dialog,
@@ -6,7 +8,6 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "../../components/ui/dialog"
-import { Avatar, AvatarFallback, AvatarImage } from "../../components/ui/avatar"
 import { CheckCircle2, XCircle } from "lucide-react";
 
 export type User = {
@@ -46,16 +47,18 @@ export function UserProfileDialog({ user }: props) {
                     <DialogTitle>{user.alias}</DialogTitle>
 
                 </DialogHeader>
-                <div className="inline-flex justify-center">
-                    <Avatar>
-                        <AvatarImage src="https://camo.githubusercontent.com/9ebf5324b941f61a34bc99ca10d201c0b7715708d9489cdfe9bf982ffabd3720/68747470733a2f2f7062732e7477696d672e636f6d2f70726f66696c655f696d616765732f313637333332343635323334333535383134352f4e484f4f4e3778785f343030783430302e6a7067" />
-                        <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
-
+                <div className="w-[300px] m-auto">
+                    <AspectRatio ratio={1 / 1} className="bg-muted">
+                        <img
+                            src={altImg}
+                            alt="Photo by Drew Beamer"
+                            className="rounded-md object-cover"
+                        />
+                    </AspectRatio>
                 </div>
                 <div className="text-center">
                     <p className="text-xl font-bold">{user.name}</p>
-                    <p className="text-lg text-secondary">{user.alias}</p>
+                    <p className="text-lg text-muted-foreground">{user.alias}</p>
                     <p className="text-lg ">{user.phone}</p>
                     <p className="text-lg ">{user.email}</p>
                 </div>
@@ -71,7 +74,7 @@ export function UserProfileDialog({ user }: props) {
                     <p className="text-lg font-semibold">
                         Created at:
                     </p>
-                    <p className="text-lg text-secondary">{user.created_at}</p>
+                    <p className="text-lg text-muted-foreground">{user.created_at}</p>
 
                 </div>
                 <div className="grid grid-cols-4">
@@ -94,13 +97,13 @@ export function UserProfileDialog({ user }: props) {
                 </div>
                 <div className="grid grid-cols-4">
 
-                    <p className="text-lg text-secondary">{user.active ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
+                    <p className="text-lg text-muted-foreground">{user.active ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
                     </p>
-                    <p className="text-lg text-secondary">{user.suspended ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
+                    <p className="text-lg text-muted-foreground">{user.suspended ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
                     </p>
-                    <p className="text-lg text-secondary">{user.verified ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
+                    <p className="text-lg text-muted-foreground">{user.verified ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
                     </p>
-                    <p className="text-lg text-secondary">{user.shared ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
+                    <p className="text-lg text-muted-foreground">{user.shared ? <div className="text-primary"><CheckCircle2 /></div> : <div className="text-destructive"><XCircle /></div>}
                     </p>
                 </div>
 

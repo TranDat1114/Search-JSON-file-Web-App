@@ -19,8 +19,8 @@ import {
     useReactTable,
 } from "@tanstack/react-table"
 
-import { Button } from "../../components/ui/button"
-import { Checkbox } from "../../components/ui/checkbox"
+import { Button } from "../ui/button"
+import { Checkbox } from "../ui/checkbox"
 import {
     DropdownMenu,
     DropdownMenuCheckboxItem,
@@ -29,7 +29,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "../../components/ui/dropdown-menu"
+} from "../ui/dropdown-menu"
 import {
     Table,
     TableBody,
@@ -37,12 +37,13 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "../../components/ui/table"
+} from "../ui/table"
 import { useToast } from "../ui/use-toast"
 import axios from "axios"
 import { Badge } from "../ui/badge"
 import DebouncedInput from "../ui/debounced-input"
 import { CheckCircle2, XCircle } from "lucide-react"
+import { Link } from "react-router-dom"
 
 
 export type Ticket = {
@@ -216,31 +217,7 @@ export const columns: ColumnDef<Ticket>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => {
-
-            const value = row.getValue<string>("due_at")
-            const [time, timeZone] = value.split(" ")
-
-            const dateObject = new Date(time);
-
-            // Định dạng ngày, tháng, năm, giờ, phút và giây
-            const formattedDate = dateObject.toLocaleDateString();
-            const formattedTime = dateObject.toLocaleTimeString();
-
-            return (
-                <div className="text-right">
-                    <p>
-                        {formattedDate}
-                    </p>
-                    <p>
-                        {formattedTime}
-                    </p>
-                    <p>
-                        (UTC) {timeZone}
-                    </p>
-                </div>
-            )
-        },
+        cell: ({ row }) => <div className="text-right">{row.getValue<string>("due_at")}</div>
     },
     {
         id: "actions",
@@ -258,13 +235,25 @@ export const columns: ColumnDef<Ticket>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
+                            onClick={() => navigator.clipboard.writeText(row.original._id)}
+                        >
+                            Copy _id
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
                             onClick={() => navigator.clipboard.writeText(row.original.external_id)}
                         >
                             Copy external id
                         </DropdownMenuItem>
                         <DropdownMenuSeparator />
-                        <DropdownMenuItem>View ticket</DropdownMenuItem>
-                        <DropdownMenuItem>View user</DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to={`/user/${row.original.submitter_id}`}>View this ticket's submitter</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to={`/user/${row.original.assignee_id}`}>View this ticket's assignee</Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                            <Link to={`/organization/${row.original.organization_id}`}>View this ticket's organization</Link>
+                        </DropdownMenuItem>
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
@@ -274,10 +263,13 @@ export const columns: ColumnDef<Ticket>[] = [
 
 const api_Url = "https://search-json-file-server-db.vercel.app/tickets"
 type props = {
-    organizationInputId: string
+    ticketInputId: string | undefined
+    assigneeInputId: string | undefined
+    submitedInputId: string | undefined
+    organizationInputId: string | undefined
 }
 
-export function OrganizationTicketDataTable({ organizationInputId }: props) {
+export function OrganizationTicketDataTable({ ticketInputId, assigneeInputId, submitedInputId, organizationInputId }: props) {
     const [sorting, setSorting] = React.useState<SortingState>([])
     const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
         []
@@ -294,7 +286,21 @@ export function OrganizationTicketDataTable({ organizationInputId }: props) {
         axios.get(api_Url)
             .then((response) => {
                 const data: Ticket[] = response.data;
-                setTickets(data.filter(f => f.organization_id === Number.parseInt(organizationInputId)));
+
+                if (ticketInputId != undefined) {
+                    setTickets(data.filter(f => f._id === ticketInputId));
+                } else if (assigneeInputId != undefined) {
+                    setTickets(data.filter(f => f.assignee_id === Number.parseInt(assigneeInputId)));
+                }
+                else if (submitedInputId != undefined) {
+                    setTickets(data.filter(f => f.submitter_id === Number.parseInt(submitedInputId)));
+                }
+                else if (organizationInputId != undefined) {
+                    setTickets(data.filter(f => f.organization_id === Number.parseInt(organizationInputId)));
+                }
+                else {
+                    setTickets(data);
+                }
             })
             .catch((error) => {
                 console.error('Lỗi khi gọi API:', error);
@@ -304,7 +310,7 @@ export function OrganizationTicketDataTable({ organizationInputId }: props) {
                     description: error?.message ?? "Unknown error",
                 });
             });
-    }, [organizationInputId, toast]);
+    }, [assigneeInputId, submitedInputId, ticketInputId, toast]);
 
     const data = tickets;
 
