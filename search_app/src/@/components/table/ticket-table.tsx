@@ -341,7 +341,7 @@ export function OrganizationTicketDataTable({ ticketInputId, assigneeInputId, su
                     description: error?.message ?? "Unknown error",
                 });
             });
-    }, [assigneeInputId, submitedInputId, ticketInputId, toast]);
+    }, [assigneeInputId, organizationInputId, submitedInputId, ticketInputId, toast]);
 
     const data = tickets;
 
