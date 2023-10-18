@@ -44,6 +44,7 @@ import { Badge } from "../ui/badge"
 import { Link } from "react-router-dom"
 import { CheckCircle2, XCircle } from "lucide-react"
 import DebouncedInput from "../ui/debounced-input"
+import { OrganizationDialog } from "../ui/organization-dialog"
 
 export type Organization = {
     _id: number;
@@ -99,6 +100,7 @@ export const columns: ColumnDef<Organization>[] = [
         },
         cell: ({ row }) => <div className=" text-center">{row.getValue("_id")}</div>,
     },
+
     {
         accessorKey: "name",
         header: ({ column }) => {
@@ -238,31 +240,7 @@ export const columns: ColumnDef<Organization>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => {
-
-            const value = row.getValue<string>("created_at")
-            const [time, timeZone] = value.split(" ")
-
-            const dateObject = new Date(time);
-
-            // Định dạng ngày, tháng, năm, giờ, phút và giây
-            const formattedDate = dateObject.toLocaleDateString();
-            const formattedTime = dateObject.toLocaleTimeString();
-
-            return (
-                <div className="text-right">
-                    <p>
-                        {formattedDate}
-                    </p>
-                    <p>
-                        {formattedTime}
-                    </p>
-                    <p>
-                        (UTC) {timeZone}
-                    </p>
-                </div>
-            )
-        },
+        cell: ({ row }) => <div className="text-right">{row.getValue<string>("created_at")}</div>
     },
     {
         id: "actions",
@@ -280,6 +258,11 @@ export const columns: ColumnDef<Organization>[] = [
                     <DropdownMenuContent align="end">
                         <DropdownMenuLabel>Actions</DropdownMenuLabel>
                         <DropdownMenuItem
+                            onClick={() => navigator.clipboard.writeText(row.original._id.toString())}
+                        >
+                            Copy this id
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
                             onClick={() => navigator.clipboard.writeText(row.original.external_id)}
                         >
                             Copy this external id
@@ -291,6 +274,7 @@ export const columns: ColumnDef<Organization>[] = [
                         <DropdownMenuItem>
                             <Link to={`/user-organization/${row.original._id}`}>View this organization's user </Link>
                         </DropdownMenuItem>
+                        <OrganizationDialog organization={row.original} />
                     </DropdownMenuContent>
                 </DropdownMenu >
             )
@@ -338,7 +322,7 @@ export function OrganizationDataTable({ organizationInputId }: props) {
                     description: error?.message ?? "Unknown error",
                 });
             });
-    }, [toast]);
+    }, [organizationInputId, toast]);
 
     const data = organizations;
 

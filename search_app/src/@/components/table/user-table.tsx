@@ -30,7 +30,6 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "../ui/dropdown-menu"
-import { Input } from "../ui/input"
 import {
     Table,
     TableBody,
@@ -46,6 +45,7 @@ import { CheckCircle2, XCircle } from "lucide-react"
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip"
 import { UserProfileDialog } from "../ui/user-profile-dialog"
 import { Link } from "react-router-dom"
+import DebouncedInput from "../ui/debounced-input"
 
 export type User = {
     _id: number;
@@ -120,6 +120,21 @@ export const columns: ColumnDef<User>[] = [
             </TooltipProvider>
         </>
         ,
+    },
+    {
+        accessorKey: "name",
+        header: ({ column }) => {
+            return (
+                <Button className="w-full"
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    Names
+                    <CaretSortIcon className="ml-2 h-4 w-4" />
+                </Button>
+            )
+        },
+        cell: ({ row }) => <div className="">{row.getValue("name")}</div>,
     },
     {
         accessorKey: "email",
@@ -235,31 +250,7 @@ export const columns: ColumnDef<User>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => {
-
-            const value = row.getValue<string>("last_login_at")
-            const [time, timeZone] = value.split(" ")
-
-            const dateObject = new Date(time);
-
-            // Định dạng ngày, tháng, năm, giờ, phút và giây
-            const formattedDate = dateObject.toLocaleDateString();
-            const formattedTime = dateObject.toLocaleTimeString();
-
-            return (
-                <div className="text-right">
-                    <p>
-                        {formattedDate}
-                    </p>
-                    <p>
-                        {formattedTime}
-                    </p>
-                    <p>
-                        (UTC) {timeZone}
-                    </p>
-                </div>
-            )
-        },
+        cell: ({ row }) => <div className="text-right whitespace-pre-wrap">{row.getValue<string>("last_login_at")}</div>
     },
     {
         id: "actions",
@@ -318,6 +309,7 @@ export function OrganizationUserDataTable({ userInputId, organizationInputId }: 
         React.useState<VisibilityState>({})
     const [rowSelection, setRowSelection] = React.useState({})
 
+    const [globalFilter, setGlobalFilter] = React.useState('')
     const [users, setUsers] = React.useState<User[]>([]);
     const { toast } = useToast()
 
@@ -361,7 +353,9 @@ export function OrganizationUserDataTable({ userInputId, organizationInputId }: 
             columnFilters,
             columnVisibility,
             rowSelection,
+            globalFilter,
         },
+        onGlobalFilterChange: setGlobalFilter,
     })
 
     return (
@@ -369,13 +363,11 @@ export function OrganizationUserDataTable({ userInputId, organizationInputId }: 
 
             <div className="w-full">
                 <div className="flex items-center py-4">
-                    <Input
-                        placeholder="Filter alias..."
-                        value={(table.getColumn("alias")?.getFilterValue() as string) ?? ""}
-                        onChange={(event) =>
-                            table.getColumn("alias")?.setFilterValue(event.target.value)
-                        }
-                        className="max-w-sm"
+                    <DebouncedInput
+                        value={globalFilter ?? ''}
+                        onChange={value => setGlobalFilter(String(value))}
+                        className="p-2 font-lg shadow border border-block"
+                        placeholder="Search all columns..."
                     />
                     <DropdownMenu>
                         <DropdownMenuTrigger asChild>

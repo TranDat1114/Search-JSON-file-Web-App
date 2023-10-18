@@ -40,7 +40,7 @@ export function UserProfileDialog({ user }: props) {
     return (
         <Dialog>
             <DialogTrigger asChild>
-                <Button variant="outline">View profile</Button>
+                <Button className="w-full" variant="outline">View profile</Button>
             </DialogTrigger>
             <DialogContent className="">
                 <DialogHeader>

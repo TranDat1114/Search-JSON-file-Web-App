@@ -44,6 +44,7 @@ import { Badge } from "../ui/badge"
 import DebouncedInput from "../ui/debounced-input"
 import { CheckCircle2, XCircle } from "lucide-react"
 import { Link } from "react-router-dom"
+import { TicketDialog } from "../ui/ticket-dialog"
 
 
 export type Ticket = {
@@ -108,7 +109,21 @@ export const columns: ColumnDef<Ticket>[] = [
     },
     {
         accessorKey: "description",
-        header: "Descriptions",
+        header: ({ column }) => {
+            return (
+                <Button className="w-full"
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    <div className="inline-flex justify-start items-center w-full">
+                        <div className="whitespace-nowrap">
+                            Description
+                        </div>
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </div>
+                </Button>
+            )
+        },
         cell: ({ row }) => <div className="">{row.getValue("description")}</div>,
     },
     {
@@ -162,7 +177,21 @@ export const columns: ColumnDef<Ticket>[] = [
     },
     {
         accessorKey: "status",
-        header: "Status",
+        header: ({ column }) => {
+            return (
+                <Button className="w-full"
+                    variant="ghost"
+                    onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+                >
+                    <div className="inline-flex justify-start items-center w-full">
+                        <div className="whitespace-nowrap">
+                            Status
+                        </div>
+                        <CaretSortIcon className="ml-2 h-4 w-4" />
+                    </div>
+                </Button>
+            )
+        },
         cell: ({ row }) => <div className="">{row.getValue("status")}</div>,
     },
     {
@@ -217,7 +246,7 @@ export const columns: ColumnDef<Ticket>[] = [
                 </Button>
             )
         },
-        cell: ({ row }) => <div className="text-right">{row.getValue<string>("due_at")}</div>
+        cell: ({ row }) => <div className="text-right whitespace-pre-wrap">{row.getValue<string>("due_at")}</div>
     },
     {
         id: "actions",
@@ -254,6 +283,8 @@ export const columns: ColumnDef<Ticket>[] = [
                         <DropdownMenuItem>
                             <Link to={`/organization/${row.original.organization_id}`}>View this ticket's organization</Link>
                         </DropdownMenuItem>
+                        <TicketDialog ticket={row.original} />
+
                     </DropdownMenuContent>
                 </DropdownMenu>
             )
