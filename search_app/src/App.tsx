@@ -8,7 +8,7 @@ import { OrganizationPage } from "./pages/organization";
 function App() {
   return (
     <>
-      <ThemeProvider defaultTheme="light" storageKey="vite-ui-theme">
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
         <Router>
           <div className="App">
             <Routes>
