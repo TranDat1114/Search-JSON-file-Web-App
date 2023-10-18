@@ -10,6 +10,16 @@ Query data from json file users.json; tickets.json; organizations.json
 
 **Server:** Node
 
+## Demo
+
+![demo](demo.gif)
+
+#### https://vercel.com/trandat1114/search-json-file-web-app
+
+## Screenshots
+
+![App Screenshot](https://i.ibb.co/bdbtPzx/Screenshot-2023-10-18-044637.png)
+![App Screenshot](https://i.ibb.co/0G191wm/Screenshot-2023-10-18-044405.png)
 
 ## API Reference
 
@@ -39,17 +49,6 @@ return users.json
 ```
 
 return tickets.json
-## Demo
-
-![demo](demo.gif)
-
-#### https://vercel.com/trandat1114/search-json-file-web-app
-
-## Screenshots
-
-![App Screenshot](https://i.ibb.co/bdbtPzx/Screenshot-2023-10-18-044637.png)
-![App Screenshot](https://i.ibb.co/0G191wm/Screenshot-2023-10-18-044405.png)
-
 
 ## Installation
 
